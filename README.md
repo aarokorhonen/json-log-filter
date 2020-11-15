@@ -22,7 +22,7 @@ Run the utility by executing the `index.js` module. Specify a minimum log level
 $ node index.js 20
 ```
 
-Use this utility as part of a UNIX-style pipe to filter out log levels produced by another process.
+Use this utility as part of a UNIX-style pipe to filter out log entries produced by another process.
 
 ## Features
 
