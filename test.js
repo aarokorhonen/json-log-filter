@@ -7,6 +7,7 @@ const level = "30";
 const p = childProcess.spawn(process.argv[0], [indexModulePath, level]);
 
 const expected = `{"level":40}
+{}
 {"level":40}
 {"level":30}
 `;
@@ -29,6 +30,7 @@ p.stderr.on("data", (data) => {
 });
 
 p.stdin.write('{ "level": 40 }\n');
+p.stdin.write("{  }\n");
 p.stdin.write('{ "level": 40 }\n');
 p.stdin.write('{ "level": 30 }\n');
 p.stdin.end('{ "level": 20 }\n');
