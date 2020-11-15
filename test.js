@@ -1,36 +1,34 @@
+const { test, expect } = require("@jest/globals");
 const process = require("process");
 const childProcess = require("child_process");
 
-const indexModulePath = "index.js";
-const level = "30";
+test("Filter by level", (done) => {
+    const indexModulePath = "index.js";
+    const level = "30";
 
-const p = childProcess.spawn(process.argv[0], [indexModulePath, level]);
+    const proc = childProcess.spawn(process.argv[0], [indexModulePath, level]);
 
-const expected = `{"level":40}
-{}
-{"level":40}
-{"level":30}
-`;
+    const expected = `{"level":40}\n{}\n{"level":40}\n{"level":30}\n`;
 
-let t = "";
+    let output = "";
 
-p.stdout.on("data", (data) => {
-    console.log(String(data));
-    t += String(data);
+    proc.stdout.on("data", (data) => {
+        output += String(data);
+    });
+
+    proc.stdout.on("end", (data) => {
+        expect(output).toEqual(expected);
+        done();
+    });
+
+    proc.stderr.on("data", (error) => {
+        console.error(String(error));
+        done(error);
+    });
+
+    proc.stdin.write('{ "level": 40 }\n');
+    proc.stdin.write("{  }\n");
+    proc.stdin.write('{ "level": 40 }\n');
+    proc.stdin.write('{ "level": 30 }\n');
+    proc.stdin.end('{ "level": 20 }\n');
 });
-
-p.stdout.on("end", (data) => {
-    const result = t === expected;
-    const exitCode = result ? 0 : 1;
-    process.exitCode = exitCode;
-});
-
-p.stderr.on("data", (data) => {
-    console.error(String(data));
-});
-
-p.stdin.write('{ "level": 40 }\n');
-p.stdin.write("{  }\n");
-p.stdin.write('{ "level": 40 }\n');
-p.stdin.write('{ "level": 30 }\n');
-p.stdin.end('{ "level": 20 }\n');

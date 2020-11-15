@@ -4,11 +4,16 @@
     "description": "",
     "main": "index.js",
     "scripts": {
-        "test": "node test.js"
+        "test": "jest test.js"
     },
     "author": "",
     "license": "MIT",
     "prettier": {
         "tabWidth": 4
-    }
+    },
+    "devDependencies": {
+        "@jest/globals": "^26.6.2",
+        "jest": "^26.6.2"
+    },
+    "dependencies": {}
 }
