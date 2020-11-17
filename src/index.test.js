@@ -1,8 +1,9 @@
 const { test, expect, describe } = require("@jest/globals");
 const process = require("process");
 const childProcess = require("child_process");
+const path = require("path");
 
-const indexModulePath = "index.js";
+const indexModulePath = path.resolve(__dirname, "index.js");
 
 const spawnIndexModule = (level) => {
     const nodePath = process.argv[0];
