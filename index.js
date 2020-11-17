@@ -5,14 +5,19 @@ const rl = readline.createInterface({
     terminal: false,
 });
 
-const level = process.argv[2];
+const level = parseInt(process.argv[2], 10);
 
-rl.on("line", function (line) {
-    const entry = JSON.parse(line);
-    if (entry.level && entry.level < level) {
-        return;
-    } else {
-        const output = JSON.stringify(entry);
-        process.stdout.write(`${output}\n`);
-    }
-});
+if (Number.isNaN(level)) {
+    console.error("Invalid log level supplied!");
+    process.exit(1);
+} else {
+    rl.on("line", function (line) {
+        const entry = JSON.parse(line);
+        if (entry.level && entry.level < level) {
+            return;
+        } else {
+            const output = JSON.stringify(entry);
+            process.stdout.write(`${output}\n`);
+        }
+    });
+}

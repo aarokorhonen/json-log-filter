@@ -26,7 +26,7 @@ Use this utility as part of a UNIX-style pipe to filter out log entries produced
 
 ## Features
 
--   Specify minimum level as a command line argument (see above example). All lines with a `level` entry lower than the specified value will be ignored.
+-   Specify minimum level as a command line argument of type integer (see above example). All lines with a `level` entry lower than the specified value will be ignored.
 
 ## Development
 
