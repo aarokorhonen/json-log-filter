@@ -5,7 +5,10 @@ const childProcess = require("child_process");
 const indexModulePath = "index.js";
 
 const spawnIndexModule = (level) => {
-    return childProcess.spawn(process.argv[0], [indexModulePath, level]);
+    const nodePath = process.argv[0];
+    const args =
+        level !== undefined ? [indexModulePath, level] : [indexModulePath];
+    return childProcess.spawn(nodePath, args);
 };
 
 describe("Filter by level", () => {
@@ -38,15 +41,31 @@ describe("Filter by level", () => {
         proc.stdin.end('{ "level": 20 }\n');
     });
 
-    test("fails on missing argument", (done) => {
-        const level = "";
-
+    test("filters out nothing if no argument supplied", (done) => {
+        const level = undefined;
         const proc = spawnIndexModule(level);
 
-        proc.on("exit", (code) => {
-            expect(code).not.toEqual(0);
+        const expected = `{"level":10}\n{"level":0}\n{"level":-10}\n`;
+
+        let output = "";
+
+        proc.stdout.on("data", (data) => {
+            output += String(data);
+        });
+
+        proc.stdout.on("end", (data) => {
+            expect(output).toEqual(expected);
             done();
         });
+
+        proc.stderr.on("data", (error) => {
+            console.error(String(error));
+            done(error);
+        });
+
+        proc.stdin.write('{ "level": 10 }\n');
+        proc.stdin.write('{ "level": 0 }\n');
+        proc.stdin.end('{ "level": -10 }\n');
     });
 
     test("fails on invalid argument", (done) => {
