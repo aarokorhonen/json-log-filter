@@ -6,11 +6,13 @@ import assert from "assert";
 
 const indexModulePath = path.resolve(__dirname, "index.js");
 
-export const spawnIndexModule = (level: string | undefined) => {
+export const spawnIndexModule = (args: string | undefined) => {
     const nodePath = process.argv[0];
-    const args =
-        level !== undefined ? [indexModulePath, level] : [indexModulePath];
-    return childProcess.spawn(nodePath, args);
+    const fullArgs =
+        args !== undefined
+            ? [indexModulePath, ...args.split(" ")]
+            : [indexModulePath];
+    return childProcess.spawn(nodePath, fullArgs);
 };
 
 export function assertDoneFn(

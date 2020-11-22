@@ -1,40 +1,19 @@
 import readline from "readline";
-import { printHelpMessage } from "./args";
+import { parseConfigFromArgs } from "./args";
 
 const rl = readline.createInterface({
     input: process.stdin,
     terminal: false,
 });
 
-const parseMinLogLevel = (arg: string | undefined) => {
-    if (arg === undefined) {
-        return undefined;
-    } else {
-        const int = parseInt(arg, 10);
-        if (Number.isNaN(int)) {
-            console.error(`Invalid log level supplied: ${arg}`);
-            process.exit(1);
-        } else {
-            return int;
-        }
-    }
-};
-
-const argument = process.argv[2];
-
-if (argument === "--help") {
-    printHelpMessage();
-    process.exit(0);
-}
-
-const minLogLevel = parseMinLogLevel(argument);
+const config = parseConfigFromArgs(process.argv.slice(2));
 
 rl.on("line", (line) => {
     const entry = JSON.parse(line);
     if (
-        typeof minLogLevel === "number" &&
+        typeof config.minLogLevel === "number" &&
         typeof entry.level === "number" &&
-        entry.level < minLogLevel
+        entry.level < config.minLogLevel
     ) {
         return;
     } else {
