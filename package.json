@@ -4,10 +4,12 @@
     "description": "",
     "main": "dist/index.js",
     "scripts": {
-        "build": "yarn run build:clean && yarn run build:tsc",
+        "build": "yarn run build:clean && yarn run build:tsc:prod",
+        "build:dev": "yarn run build:clean && yarn run build:tsc:dev",
         "build:clean": "rimraf dist",
-        "build:tsc": "tsc",
-        "test": "yarn run build && jest dist/*.test.js"
+        "build:tsc:prod": "tsc --project tsconfig.prod.json",
+        "build:tsc:dev": "tsc --project tsconfig.dev.json",
+        "test": "yarn run build:dev && jest dist/*.test.js"
     },
     "author": "",
     "license": "MIT",

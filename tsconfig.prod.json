@@ -8,5 +8,7 @@
         "forceConsistentCasingInFileNames": true,
         "noEmitOnError": true,
         "outDir": "./dist"
-    }
+    },
+    "include": ["src/**/*"],
+    "exclude": ["src/**/*.test.*"]
 }
