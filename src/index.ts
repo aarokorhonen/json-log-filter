@@ -1,12 +1,12 @@
-const readline = require("readline");
-const { printHelpMessage } = require("./args");
+import readline from "readline";
+import { printHelpMessage } from "./args";
 
 const rl = readline.createInterface({
     input: process.stdin,
     terminal: false,
 });
 
-const parseMinLogLevel = (arg) => {
+const parseMinLogLevel = (arg: string | undefined) => {
     if (arg === undefined) {
         return undefined;
     } else {
@@ -31,9 +31,11 @@ const minLogLevel = parseMinLogLevel(argument);
 
 rl.on("line", (line) => {
     const entry = JSON.parse(line);
-    const isLevelFilterActive =
-        typeof minLogLevel === "number" && typeof entry.level === "number";
-    if (isLevelFilterActive && entry.level < minLogLevel) {
+    if (
+        typeof minLogLevel === "number" &&
+        typeof entry.level === "number" &&
+        entry.level < minLogLevel
+    ) {
         return;
     } else {
         const output = JSON.stringify(entry);

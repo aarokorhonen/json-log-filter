@@ -5,8 +5,6 @@ Example usage:  node index.js 30
 Options:        --help    Prints this message
 `;
 
-const printHelpMessage = () => {
+export const printHelpMessage = () => {
     console.log(helpMessage);
 };
-
-module.exports.printHelpMessage = printHelpMessage;

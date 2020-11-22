@@ -1,8 +1,10 @@
-const { test, expect, describe } = require("@jest/globals");
-const { spawnIndexModule } = require("./index.test");
+import { test, expect, describe } from "@jest/globals";
+import { assertDoneFn, spawnIndexModule } from "./index.test";
 
 describe("Arguments parsing", () => {
     test("Prints usage with --help", (done) => {
+        assertDoneFn(done);
+
         const proc = spawnIndexModule("--help");
 
         let output = "";

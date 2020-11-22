@@ -1,23 +1,30 @@
-const { test, expect, describe } = require("@jest/globals");
-const process = require("process");
-const childProcess = require("child_process");
-const path = require("path");
+import { test, expect, describe } from "@jest/globals";
+import process from "process";
+import childProcess from "child_process";
+import path from "path";
+import assert from "assert";
 
 const indexModulePath = path.resolve(__dirname, "index.js");
 
-const spawnIndexModule = (level) => {
+export const spawnIndexModule = (level: string | undefined) => {
     const nodePath = process.argv[0];
     const args =
         level !== undefined ? [indexModulePath, level] : [indexModulePath];
     return childProcess.spawn(nodePath, args);
 };
 
-module.exports.spawnIndexModule = spawnIndexModule;
+export function assertDoneFn(
+    doneFn: Function | undefined
+): asserts doneFn is Function {
+    assert(doneFn !== undefined, "Missing doneFn!");
+}
 
 describe("Filter by level", () => {
     test("filters out low level entries", (done) => {
+        assertDoneFn(done);
+
         const level = 30;
-        const proc = spawnIndexModule(level);
+        const proc = spawnIndexModule(String(level));
 
         const expected = `{"level":40}\n{}\n{"level":40}\n{"level":30}\n`;
 
@@ -27,7 +34,7 @@ describe("Filter by level", () => {
             output += String(data);
         });
 
-        proc.stdout.on("end", (data) => {
+        proc.stdout.on("end", () => {
             expect(output).toEqual(expected);
             done();
         });
@@ -45,6 +52,8 @@ describe("Filter by level", () => {
     });
 
     test("filters out nothing if no argument supplied", (done) => {
+        assertDoneFn(done);
+
         const level = undefined;
         const proc = spawnIndexModule(level);
 
@@ -56,7 +65,7 @@ describe("Filter by level", () => {
             output += String(data);
         });
 
-        proc.stdout.on("end", (data) => {
+        proc.stdout.on("end", () => {
             expect(output).toEqual(expected);
             done();
         });
@@ -72,6 +81,8 @@ describe("Filter by level", () => {
     });
 
     test("fails on invalid argument", (done) => {
+        assertDoneFn(done);
+
         const level = "non-numeric";
 
         const proc = spawnIndexModule(level);
