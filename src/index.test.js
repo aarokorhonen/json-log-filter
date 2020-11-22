@@ -12,6 +12,8 @@ const spawnIndexModule = (level) => {
     return childProcess.spawn(nodePath, args);
 };
 
+module.exports.spawnIndexModule = spawnIndexModule;
+
 describe("Filter by level", () => {
     test("filters out low level entries", (done) => {
         const level = 30;

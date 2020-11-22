@@ -4,7 +4,7 @@
     "description": "",
     "main": "src/index.js",
     "scripts": {
-        "test": "jest src/index.test.js"
+        "test": "jest src/index.test.js src/args.test.js"
     },
     "author": "",
     "license": "MIT",

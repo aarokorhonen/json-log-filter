@@ -1,4 +1,5 @@
 const readline = require("readline");
+const { printHelpMessage } = require("./args");
 
 const rl = readline.createInterface({
     input: process.stdin,
@@ -19,9 +20,14 @@ const parseMinLogLevel = (arg) => {
     }
 };
 
-const minLogLevelArgument = process.argv[2];
+const argument = process.argv[2];
 
-const minLogLevel = parseMinLogLevel(minLogLevelArgument);
+if (argument === "--help") {
+    printHelpMessage();
+    process.exit(0);
+}
+
+const minLogLevel = parseMinLogLevel(argument);
 
 rl.on("line", (line) => {
     const entry = JSON.parse(line);
