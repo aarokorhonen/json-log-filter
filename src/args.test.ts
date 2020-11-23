@@ -5,7 +5,7 @@ describe("Arguments parsing", () => {
     test("Prints usage with --help", (done) => {
         assertDoneFn(done);
 
-        const proc = spawnIndexModule("--help");
+        const proc = spawnIndexModule(["--help"]);
 
         let output = "";
 
@@ -28,7 +28,7 @@ describe("Arguments parsing", () => {
     test("Correctly identifies --help even when it's not the first arg", (done) => {
         assertDoneFn(done);
 
-        const proc = spawnIndexModule("20 --help");
+        const proc = spawnIndexModule(["--min-level", "20", "--help"]);
 
         let output = "";
 

@@ -6,12 +6,10 @@ import assert from "assert";
 
 const indexModulePath = path.resolve(__dirname, "index.js");
 
-export const spawnIndexModule = (args: string | undefined) => {
+export const spawnIndexModule = (args: string[]) => {
     const nodePath = process.argv[0];
     const fullArgs =
-        args !== undefined
-            ? [indexModulePath, ...args.split(" ")]
-            : [indexModulePath];
+        args !== undefined ? [indexModulePath, ...args] : [indexModulePath];
     return childProcess.spawn(nodePath, fullArgs);
 };
 
@@ -26,7 +24,7 @@ describe("Filter by level", () => {
         assertDoneFn(done);
 
         const level = 30;
-        const proc = spawnIndexModule(String(level));
+        const proc = spawnIndexModule(["--min-level", `${level}`]);
 
         const expected = `{"level":40}\n{}\n{"level":40}\n{"level":30}\n`;
 
@@ -56,8 +54,7 @@ describe("Filter by level", () => {
     test("filters out nothing if no argument supplied", (done) => {
         assertDoneFn(done);
 
-        const level = undefined;
-        const proc = spawnIndexModule(level);
+        const proc = spawnIndexModule([]);
 
         const expected = `{"level":10}\n{"level":0}\n{"level":-10}\n`;
 
@@ -87,7 +84,7 @@ describe("Filter by level", () => {
 
         const level = "non-numeric";
 
-        const proc = spawnIndexModule(level);
+        const proc = spawnIndexModule(["--min-level", level]);
 
         proc.on("exit", (code) => {
             expect(code).not.toEqual(0);
