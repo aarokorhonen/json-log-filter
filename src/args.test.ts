@@ -47,4 +47,40 @@ describe("Arguments parsing", () => {
             done();
         });
     });
+
+    test("Fails on unknown arguments", (done) => {
+        assertDoneFn(done);
+
+        const proc = spawnIndexModule(["--bogus"]);
+
+        let t = "";
+
+        proc.stderr.on("data", (error) => {
+            t += String(error);
+        });
+
+        proc.on("exit", (exitCode) => {
+            expect(t).toMatch(/unknown.*--bogus/);
+            expect(exitCode).not.toBe(0);
+            done();
+        });
+    });
+
+    test("Fails on unknown command", (done) => {
+        assertDoneFn(done);
+
+        const proc = spawnIndexModule(["20"]);
+
+        let t = "";
+
+        proc.stderr.on("data", (error) => {
+            t += String(error);
+        });
+
+        proc.on("exit", (exitCode) => {
+            expect(t).toMatch(/command not supported: 20/);
+            expect(exitCode).not.toBe(0);
+            done();
+        });
+    });
 });
