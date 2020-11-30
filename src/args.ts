@@ -54,6 +54,7 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
                 "--min-level": parseMinLogLevel,
                 "--invalid-json": (input) =>
                     parseBehavior(input, "--invalid-json"),
+                "--debug-print-config": Boolean,
             },
             {
                 argv: slicedArgV,
@@ -74,6 +75,11 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
             minLogLevel: args["--min-level"],
             invalidJson: args["--invalid-json"] ?? "error",
         };
+
+        if (args["--debug-print-config"]) {
+            console.log(JSON.stringify(config, null, 4));
+            process.exit(0);
+        }
 
         return config;
     } catch (err) {

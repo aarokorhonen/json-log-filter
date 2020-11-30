@@ -1,6 +1,10 @@
 import { test, expect, describe } from "@jest/globals";
 import { parseConfigFromArgs } from "./args";
-import { assertNotUndefined, spawnIndexModule } from "./index.test";
+import {
+    assertNotUndefined,
+    runToCompletion,
+    spawnIndexModule,
+} from "./index.test";
 
 describe("Arguments parsing", () => {
     test("Parses correct default config with empty argv", () => {
@@ -33,6 +37,16 @@ describe("Usage with arguments", () => {
             expect(exitCode).toBe(0);
             done();
         });
+    });
+
+    test("Prints default config with --debug-print-config", async () => {
+        const res = await runToCompletion(
+            ["--debug-print-config"],
+            '{ "skipped": true }'
+        );
+        expect(res.exitCode).toBe(0);
+        expect(JSON.parse(res.stdout)).toEqual({ invalidJson: "error" });
+        expect(res.stderr).toBe("");
     });
 
     test("Correctly identifies --help even when it's not the first arg", (done) => {

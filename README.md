@@ -24,11 +24,15 @@ $ node .
 
 Use this utility as part of a UNIX-style pipe to filter out log entries produced by another process.
 
-## Features
+## Command line options
+
+-   `--help` _(Optional)_: Print out instructions for usage.
 
 -   `--min-level` _(Optional)_: Specify minimum level as a command line argument of type integer (see above example). All lines with a `level` entry lower than the specified value will be ignored. Levels without a `level` entry will not be filtered out.
 
 -   `--invalid-json` (`error` | `skip`) _(Optional, defaults to `error`)_: Specify behavior when consuming invalid JSON lines. With `error`, the process exits with a non-zero exit code. With `skip`, the invalid line is silently filtered out and ignored.
+
+-   `--debug-print-config` _(Optional)_: Print out resolved configuration and exit.
 
 ## Development
 
