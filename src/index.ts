@@ -8,21 +8,26 @@ const rl = readline.createInterface({
 
 const config = parseConfigFromArgs(process.argv.slice(2));
 
-rl.on("line", (line) => {
+const parseLine = (line: string): any => {
     try {
         const entry = JSON.parse(line);
-        if (
-            typeof config.minLogLevel === "number" &&
-            typeof entry.level === "number" &&
-            entry.level < config.minLogLevel
-        ) {
-            return;
-        } else {
-            const output = JSON.stringify(entry);
-            process.stdout.write(`${output}\n`);
-        }
+        return entry;
     } catch (err) {
         console.error(`Invalid JSON line: "${line}" (${err})`);
         process.exit(1);
+    }
+};
+
+rl.on("line", (line) => {
+    const entry = parseLine(line);
+    if (
+        typeof config.minLogLevel === "number" &&
+        typeof entry.level === "number" &&
+        entry.level < config.minLogLevel
+    ) {
+        return;
+    } else {
+        const output = JSON.stringify(entry);
+        process.stdout.write(`${output}\n`);
     }
 });
