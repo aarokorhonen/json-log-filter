@@ -8,6 +8,8 @@ const rl = readline.createInterface({
 
 const config = parseConfigFromArgs(process.argv.slice(2));
 
+// Note: Using 'any' here mimics the signature of JSON.parse
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const parseLine = (line: string): any => {
     try {
         const entry = JSON.parse(line);

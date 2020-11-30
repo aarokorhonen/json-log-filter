@@ -1,27 +1,29 @@
 import { test, expect, describe } from "@jest/globals";
 import process from "process";
-import childProcess from "child_process";
+import childProcess, { ChildProcessWithoutNullStreams } from "child_process";
 import path from "path";
 import assert from "assert";
 
 const indexModulePath = path.resolve(__dirname, "index.js");
 
-export const spawnIndexModule = (args: string[]) => {
+export const spawnIndexModule = (
+    args: string[]
+): ChildProcessWithoutNullStreams => {
     const nodePath = process.argv[0];
     const fullArgs =
         args !== undefined ? [indexModulePath, ...args] : [indexModulePath];
     return childProcess.spawn(nodePath, fullArgs);
 };
 
-export function assertDoneFn(
-    doneFn: Function | undefined
-): asserts doneFn is Function {
-    assert(doneFn !== undefined, "Missing doneFn!");
+export function assertNotUndefined<T>(
+    doneFn: T | undefined
+): asserts doneFn is T {
+    assert(doneFn !== undefined, "Unexpected 'undefined' value");
 }
 
 describe("Filter by level", () => {
     test("filters out low level entries", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const level = 30;
         const proc = spawnIndexModule(["--min-level", `${level}`]);
@@ -52,7 +54,7 @@ describe("Filter by level", () => {
     });
 
     test("filters out nothing if no argument supplied", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule([]);
 
@@ -80,7 +82,7 @@ describe("Filter by level", () => {
     });
 
     test("fails on invalid argument", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const level = "non-numeric";
 
@@ -95,7 +97,7 @@ describe("Filter by level", () => {
 
 describe("Invalid JSON handling", () => {
     test("halts the process on invalid JSON line", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule([]);
 

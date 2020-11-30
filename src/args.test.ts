@@ -1,9 +1,9 @@
 import { test, expect, describe } from "@jest/globals";
-import { assertDoneFn, spawnIndexModule } from "./index.test";
+import { assertNotUndefined, spawnIndexModule } from "./index.test";
 
 describe("Arguments parsing", () => {
     test("Prints usage with --help", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule(["--help"]);
 
@@ -26,7 +26,7 @@ describe("Arguments parsing", () => {
     });
 
     test("Correctly identifies --help even when it's not the first arg", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule(["--min-level", "20", "--help"]);
 
@@ -49,7 +49,7 @@ describe("Arguments parsing", () => {
     });
 
     test("Fails on unknown arguments", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule(["--bogus"]);
 
@@ -67,7 +67,7 @@ describe("Arguments parsing", () => {
     });
 
     test("Fails on unknown command", (done) => {
-        assertDoneFn(done);
+        assertNotUndefined(done);
 
         const proc = spawnIndexModule(["20"]);
 
