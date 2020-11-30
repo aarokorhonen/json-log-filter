@@ -15,13 +15,16 @@ const parseLine = (line: string): any => {
         const entry = JSON.parse(line);
         return entry;
     } catch (err) {
-        console.error(`Invalid JSON line: "${line}" (${err})`);
-        process.exit(1);
+        if (config.invalidJson === "error") {
+            console.error(`Invalid JSON line: "${line}" (${err})`);
+            process.exit(1);
+        }
     }
 };
 
 rl.on("line", (line) => {
     const entry = parseLine(line);
+    if (entry === undefined) return;
     if (
         typeof config.minLogLevel === "number" &&
         typeof entry.level === "number" &&
