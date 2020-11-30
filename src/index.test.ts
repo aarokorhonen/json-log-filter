@@ -15,6 +15,46 @@ export const spawnIndexModule = (
     return childProcess.spawn(nodePath, fullArgs);
 };
 
+interface RunToCompletionResults {
+    exitCode: number;
+    stdout: string;
+    stderr: string;
+}
+
+export const runToCompletion = (
+    args: string[],
+    input: string
+): Promise<RunToCompletionResults> =>
+    new Promise((resolve) => {
+        const nodePath = process.argv[0];
+        const fullArgs =
+            args !== undefined ? [indexModulePath, ...args] : [indexModulePath];
+
+        const proc = childProcess.spawn(nodePath, fullArgs);
+
+        let stdout = "";
+        let stderr = "";
+
+        proc.stdout.on("data", (data) => {
+            stdout += String(data);
+        });
+
+        proc.stderr.on("data", (data) => {
+            stderr += String(data);
+        });
+
+        proc.stdin.end(input);
+
+        proc.on("exit", (exitCode) => {
+            assert(exitCode !== null);
+            resolve({
+                exitCode,
+                stdout,
+                stderr,
+            });
+        });
+    });
+
 export function assertNotUndefined<T>(
     doneFn: T | undefined
 ): asserts doneFn is T {
@@ -96,17 +136,9 @@ describe("Filter by level", () => {
 });
 
 describe("Invalid JSON handling", () => {
-    test("halts the process on invalid JSON line", (done) => {
-        assertNotUndefined(done);
+    test("halts the process on invalid JSON line", async () => {
+        const res = await runToCompletion([], "{ invalid: invalid }");
 
-        const proc = spawnIndexModule([]);
-
-        proc.on("exit", (code) => {
-            expect(code).not.toEqual(0);
-            done();
-        });
-
-        proc.stdin.write('{ "level": 40 }\n');
-        proc.stdin.end("{ invalid: invalid }\n");
+        expect(res.exitCode).not.toBe(0);
     });
 });
