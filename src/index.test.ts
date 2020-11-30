@@ -92,3 +92,19 @@ describe("Filter by level", () => {
         });
     });
 });
+
+describe("Invalid JSON handling", () => {
+    test("halts the process on invalid JSON line", (done) => {
+        assertDoneFn(done);
+
+        const proc = spawnIndexModule([]);
+
+        proc.on("exit", (code) => {
+            expect(code).not.toEqual(0);
+            done();
+        });
+
+        proc.stdin.write('{ "level": 40 }\n');
+        proc.stdin.end("{ invalid: invalid }\n");
+    });
+});
