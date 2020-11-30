@@ -137,8 +137,26 @@ describe("Filter by level", () => {
 
 describe("Invalid JSON handling", () => {
     test("halts the process on invalid JSON line", async () => {
-        const res = await runToCompletion([], "{ invalid: invalid }");
+        const res = await runToCompletion(
+            ["--invalid-json", "error"],
+            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
+        );
 
-        expect(res.exitCode).not.toBe(0);
+        expect(res.exitCode).toBe(1);
+        expect(res.stdout).toBe('{"i":1}\n');
+        expect(res.stderr).toMatch("Invalid JSON line");
+    });
+
+    test("halts the process on invalid JSON line", async () => {
+        const res = await runToCompletion(
+            ["--invalid-json", "skip"],
+            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
+        );
+
+        expect(res).toEqual({
+            exitCode: 0,
+            stdout: '{"i":1}\n{"i":2}\n',
+            stderr: "",
+        });
     });
 });
