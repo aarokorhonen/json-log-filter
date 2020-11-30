@@ -1,7 +1,17 @@
 import { test, expect, describe } from "@jest/globals";
+import { parseConfigFromArgs } from "./args";
 import { assertNotUndefined, spawnIndexModule } from "./index.test";
 
 describe("Arguments parsing", () => {
+    test("Parses correct default config with empty argv", () => {
+        const config = parseConfigFromArgs([]);
+        expect(config).toEqual({
+            invalidJson: "error",
+        });
+    });
+});
+
+describe("Usage with arguments", () => {
     test("Prints usage with --help", (done) => {
         assertNotUndefined(done);
 
