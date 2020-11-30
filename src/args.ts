@@ -25,8 +25,25 @@ const parseMinLogLevel = (minLevel: string | undefined): number | undefined => {
     }
 };
 
+const behaviors = ["error", "skip"] as const;
+
+type Behavior = typeof behaviors[number];
+
+const isBehavior = (input: string): input is Behavior =>
+    (behaviors as readonly string[]).includes(input);
+
+const parseBehavior = (input: string, label: string): Behavior => {
+    if (isBehavior(input)) {
+        return input;
+    } else {
+        console.error(`Invalid value for option ${label}: "${input}"`);
+        process.exit(1);
+    }
+};
+
 interface Config {
     minLogLevel: number | undefined;
+    invalidJson: Behavior;
 }
 
 export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
@@ -35,6 +52,8 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
             {
                 "--help": Boolean,
                 "--min-level": parseMinLogLevel,
+                "--invalid-json": (input) =>
+                    parseBehavior(input, "--invalid-json"),
             },
             {
                 argv: slicedArgV,
@@ -53,6 +72,7 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
 
         const config: Config = {
             minLogLevel: args["--min-level"],
+            invalidJson: args["--invalid-json"] ?? "error",
         };
 
         return config;
