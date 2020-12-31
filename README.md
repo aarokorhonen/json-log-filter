@@ -1,6 +1,6 @@
-# log-filter
+# json-log-filter
 
-_Note: This is experimental software and may not be suitable for production environments!_
+_Note: This is experimental software and has not been extensively tested in production environments!_
 
 This is a tiny utility program for applying filters to structured JSON logs. It is designed to consume output from other programs that produce logs in JSON format, such as the following:
 
