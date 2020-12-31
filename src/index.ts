@@ -47,7 +47,8 @@ const onLineInvalid = (line: string, err?: unknown) => {
         console.error(`Invalid JSON line: "${line}" (${err})`);
         process.exit(1);
     } else if (config.invalidJson === "pass") {
-        process.stdout.write(`${line}\n`);
+        const output = config.dryRun ? chalk.red(line) : line;
+        process.stdout.write(`${output}\n`);
     } else if (config.invalidJson === "skip") {
         return;
     }
