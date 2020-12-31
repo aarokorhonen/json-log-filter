@@ -25,7 +25,7 @@ const parseMinLogLevel = (minLevel: string | undefined): number | undefined => {
     }
 };
 
-const behaviors = ["error", "skip"] as const;
+const behaviors = ["error", "skip", "pass"] as const;
 
 type Behavior = typeof behaviors[number];
 

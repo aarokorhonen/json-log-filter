@@ -17,21 +17,31 @@ const rl = readline.createInterface({
 
 const config = parseConfigFromArgs(process.argv.slice(2));
 
-const parseLine = (line: string): Entry | null => {
+type ParseLineResult =
+    | { status: "success"; value: Entry }
+    | { status: "failure"; err: unknown };
+
+const parseLine = (line: string): ParseLineResult => {
     try {
         const entry = JSON.parse(line);
         if (typeof entry !== "object") {
-            throw new Error(`Non-object JSON value (${typeof entry}): ${line}`);
+            return { status: "failure", err: "Invalid JSON value" };
         } else {
-            return entry;
+            return { status: "success", value: entry };
         }
     } catch (err) {
-        if (config.invalidJson === "error") {
-            console.error(`Invalid JSON line: "${line}" (${err})`);
-            process.exit(1);
-        } else {
-            return null;
-        }
+        return { status: "failure", err: "JSON syntax error" };
+    }
+};
+
+const onLineInvalid = (line: string, err?: unknown) => {
+    if (config.invalidJson === "error") {
+        console.error(`Invalid JSON line: "${line}" (${err})`);
+        process.exit(1);
+    } else if (config.invalidJson === "pass") {
+        process.stdout.write(`${line}\n`);
+    } else if (config.invalidJson === "skip") {
+        return;
     }
 };
 
@@ -52,15 +62,19 @@ const onEntryNegative = (entry: Entry) => {
 };
 
 rl.on("line", (line) => {
-    const entry = parseLine(line);
-    if (entry === null) return;
-    if (
-        typeof config.minLogLevel === "number" &&
-        typeof entry.level === "number" &&
-        entry.level < config.minLogLevel
-    ) {
-        onEntryNegative(entry);
+    const result = parseLine(line);
+    if (result.status === "failure") {
+        onLineInvalid(line, result.err);
     } else {
-        onEntryPositive(entry);
+        const entry = result.value;
+        if (
+            typeof config.minLogLevel === "number" &&
+            typeof entry.level === "number" &&
+            entry.level < config.minLogLevel
+        ) {
+            onEntryNegative(entry);
+        } else {
+            onEntryPositive(entry);
+        }
     }
 });

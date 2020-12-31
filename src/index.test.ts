@@ -161,6 +161,20 @@ describe("Invalid JSON handling", () => {
         });
     });
 
+    test("supports '--invalid-json pass'", async () => {
+        const res = await runToCompletion(
+            ["--invalid-json", "pass"],
+            '{ "i": 1 }\n"foobar"\n123\nstring\n{ invalid: invalid }\n{ "i": 2 }'
+        );
+
+        expect(res).toEqual({
+            exitCode: 0,
+            stdout:
+                '{"i":1}\n"foobar"\n123\nstring\n{ invalid: invalid }\n{"i":2}\n',
+            stderr: "",
+        });
+    });
+
     test("counts non-object JSON lines as invalid", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "error"],
