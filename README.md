@@ -44,6 +44,8 @@ $ example-app | node . --min-level 50 --invalid-json=skip | npx pino-pretty
 
 -   `--min-level` _(Optional)_: Specify minimum level as a command line argument of type integer (see above example). All lines with a `level` entry lower than the specified value will be ignored. Levels without a `level` entry will not be filtered out.
 
+-   `--filter-expression` _(Optional)_: Specify a [JMESPath](https://jmespath.org/) expression to use as a filter. The expression will be evaluated against every JSON log entry object, and only values for which the expression evaluates to `true` will pass the filter. Note that the expression must always result in a value of type `boolean` to be considered valid. Example: `` --filter-expression="meta.importance > `100`" ``
+
 -   `--invalid-json` (`error` | `skip` | `pass`) _(Optional, defaults to `error`)_: Specify behavior when consuming invalid JSON lines. With `error`, the process exits with a non-zero exit code. With `skip`, the invalid line is silently filtered out and ignored. With `pass`, the invalid line passes the filter and is output to stdout as-is.
 
 -   `--dry-run` _(Optional)_: Displays filter results with colorized output: lines that pass the specified filter rules are displayed in bold green text. Lines that would be filtered out are displayed in gray text. Using this option requires stdout to be a terminal with color support (set the `FORCE_COLOR` environment variable to `1` to always use colored output; see [details](https://github.com/chalk/supports-color/)).

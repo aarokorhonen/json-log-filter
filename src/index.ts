@@ -1,5 +1,6 @@
 import readline from "readline";
 import chalk from "chalk";
+import jmespath from "jmespath";
 import { parseConfigFromArgs } from "./args";
 
 type JsonArray = JsonValue[];
@@ -70,20 +71,48 @@ const onEntryNegative = (entry: Entry) => {
     }
 };
 
+const isBelowMinLogLevel = (entry: Entry): boolean => {
+    return (
+        typeof config.minLogLevel === "number" &&
+        typeof entry.level === "number" &&
+        entry.level < config.minLogLevel
+    );
+};
+
+const isExcludedWithFilterExpression = (entry: Entry): boolean => {
+    if (typeof config.filterExpression === "undefined") {
+        return false;
+    } else {
+        const expressionResult = jmespath.search(
+            entry,
+            config.filterExpression,
+        );
+        if (typeof expressionResult !== "boolean") {
+            throw new Error(
+                `Invalid filter expression (expecting return value type` +
+                    ` 'boolean' but got ${typeof expressionResult})`,
+            );
+        } else {
+            return !expressionResult;
+        }
+    }
+};
+
 rl.on("line", (line) => {
     const result = parseLine(line);
     if (result.status === "failure") {
         onLineInvalid(line, result.err);
     } else {
         const entry = result.value;
-        if (
-            typeof config.minLogLevel === "number" &&
-            typeof entry.level === "number" &&
-            entry.level < config.minLogLevel
-        ) {
-            onEntryNegative(entry);
-        } else {
+
+        const isPositive =
+            !isBelowMinLogLevel(entry) &&
+            !isExcludedWithFilterExpression(entry);
+
+        if (isPositive) {
             onEntryPositive(entry);
+        } else {
+            onEntryNegative(entry);
         }
     }
 });
