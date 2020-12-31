@@ -18,13 +18,25 @@ The utility runs on Node.js.
 
 ## Usage
 
-Run the utility by executing the `index.js` module. Optionally, you can specify command line arguments (see below).
+Build the module using the `build` script from package.json:
+
+```console
+$ yarn run build
+```
+
+Run the utility by executing the main module. Optionally, you can specify command line arguments (see below).
 
 ```console
 $ node .
 ```
 
 Use this utility as part of a UNIX-style pipe to filter out log entries produced by another process.
+
+For example, use in conjunction with [`pino-pretty`](https://github.com/pinojs/pino-pretty) to focus on interesting lines:
+
+```console
+$ example-app | node . --min-level 50 --invalid-json=skip | npx pino-pretty
+```
 
 ## Command line options
 
