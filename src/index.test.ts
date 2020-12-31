@@ -7,7 +7,7 @@ import assert from "assert";
 const indexModulePath = path.resolve(__dirname, "index.js");
 
 export const spawnIndexModule = (
-    args: string[]
+    args: string[],
 ): ChildProcessWithoutNullStreams => {
     const nodePath = process.argv[0];
     const fullArgs =
@@ -24,7 +24,7 @@ interface RunToCompletionResults {
 export const runToCompletion = (
     args: string[],
     input: string,
-    opts?: Partial<childProcess.SpawnOptionsWithoutStdio>
+    opts?: Partial<childProcess.SpawnOptionsWithoutStdio>,
 ): Promise<RunToCompletionResults> =>
     new Promise((resolve) => {
         const nodePath = process.argv[0];
@@ -57,7 +57,7 @@ export const runToCompletion = (
     });
 
 export function assertNotUndefined<T>(
-    doneFn: T | undefined
+    doneFn: T | undefined,
 ): asserts doneFn is T {
     assert(doneFn !== undefined, "Unexpected 'undefined' value");
 }
@@ -140,7 +140,7 @@ describe("Invalid JSON handling", () => {
     test("supports '--invalid-json error'", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "error"],
-            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
+            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }',
         );
 
         expect(res.exitCode).toBe(1);
@@ -151,7 +151,7 @@ describe("Invalid JSON handling", () => {
     test("supports '--invalid-json skip'", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "skip"],
-            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
+            '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }',
         );
 
         expect(res).toEqual({
@@ -164,7 +164,7 @@ describe("Invalid JSON handling", () => {
     test("supports '--invalid-json pass'", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "pass"],
-            '{ "i": 1 }\n"foobar"\n123\nstring\n{ invalid: invalid }\n{ "i": 2 }'
+            '{ "i": 1 }\n"foobar"\n123\nstring\n{ invalid: invalid }\n{ "i": 2 }',
         );
 
         expect(res).toEqual({
@@ -178,7 +178,7 @@ describe("Invalid JSON handling", () => {
     test("counts non-object JSON lines as invalid", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "error"],
-            '{ "i": 1 }\n123\n{ "i": 2 }'
+            '{ "i": 1 }\n123\n{ "i": 2 }',
         );
 
         expect(res.exitCode).toBe(1);
@@ -192,7 +192,7 @@ describe("Dry run", () => {
         const res = await runToCompletion(
             ["--dry-run", "--min-level", "10"],
             '{ "level": 1 }\n{ "level": 12 }\n{ "level": 13 }\n{ "level": 4 }\n',
-            { env: { FORCE_COLOR: "1" } }
+            { env: { FORCE_COLOR: "1" } },
         );
 
         expect(res.exitCode).toBe(0);
@@ -200,7 +200,7 @@ describe("Dry run", () => {
             '"\\u001b[90m{\\"level\\":1}\\u001b[39m\\n' +
                 '\\u001b[1m\\u001b[32m{\\"level\\":12}\\u001b[39m\\u001b[22m\\n' +
                 '\\u001b[1m\\u001b[32m{\\"level\\":13}\\u001b[39m\\u001b[22m\\n' +
-                '\\u001b[90m{\\"level\\":4}\\u001b[39m\\n"'
+                '\\u001b[90m{\\"level\\":4}\\u001b[39m\\n"',
         );
         expect(res.stderr).toBe("");
     });

@@ -43,7 +43,7 @@ describe("Usage with arguments", () => {
     test("Prints default config with --debug-print-config", async () => {
         const res = await runToCompletion(
             ["--debug-print-config"],
-            '{ "skipped": true }'
+            '{ "skipped": true }',
         );
         expect(res.exitCode).toBe(0);
         expect(JSON.parse(res.stdout)).toEqual({

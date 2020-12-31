@@ -17,7 +17,8 @@
     "author": "",
     "license": "MIT",
     "prettier": {
-        "tabWidth": 4
+        "tabWidth": 4,
+        "trailingComma": "all"
     },
     "devDependencies": {
         "@jest/globals": "^26.6.2",

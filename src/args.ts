@@ -61,7 +61,7 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
             {
                 argv: slicedArgV,
                 permissive: false,
-            }
+            },
         );
 
         if (args._.length > 0) {
