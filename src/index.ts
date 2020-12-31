@@ -1,4 +1,5 @@
 import readline from "readline";
+import chalk from "chalk";
 import { parseConfigFromArgs } from "./args";
 
 const rl = readline.createInterface({
@@ -22,6 +23,24 @@ const parseLine = (line: string): any => {
     }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const onEntryPositive = (entry: any) => {
+    const line = JSON.stringify(entry);
+    const output = config.dryRun ? chalk.bold.green(line) : line;
+    process.stdout.write(`${output}\n`);
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const onEntryNegative = (entry: any) => {
+    const line = JSON.stringify(entry);
+    if (config.dryRun) {
+        const output = chalk.gray(line);
+        process.stdout.write(`${output}\n`);
+    } else {
+        return;
+    }
+};
+
 rl.on("line", (line) => {
     const entry = parseLine(line);
     if (entry === undefined) return;
@@ -30,9 +49,8 @@ rl.on("line", (line) => {
         typeof entry.level === "number" &&
         entry.level < config.minLogLevel
     ) {
-        return;
+        onEntryNegative(entry);
     } else {
-        const output = JSON.stringify(entry);
-        process.stdout.write(`${output}\n`);
+        onEntryPositive(entry);
     }
 });

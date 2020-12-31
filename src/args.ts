@@ -42,6 +42,7 @@ const parseBehavior = (input: string, label: string): Behavior => {
 };
 
 interface Config {
+    dryRun: boolean;
     minLogLevel: number | undefined;
     invalidJson: Behavior;
 }
@@ -51,6 +52,7 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
         const args = arg(
             {
                 "--help": Boolean,
+                "--dry-run": Boolean,
                 "--min-level": parseMinLogLevel,
                 "--invalid-json": (input) =>
                     parseBehavior(input, "--invalid-json"),
@@ -72,6 +74,7 @@ export const parseConfigFromArgs = (slicedArgV: string[]): Config => {
         }
 
         const config: Config = {
+            dryRun: args["--dry-run"] === true,
             minLogLevel: args["--min-level"],
             invalidJson: args["--invalid-json"] ?? "error",
         };

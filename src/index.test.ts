@@ -160,3 +160,21 @@ describe("Invalid JSON handling", () => {
         });
     });
 });
+
+describe("Dry run", () => {
+    test("prints gray and green lines corresponding to filter results", async () => {
+        const res = await runToCompletion(
+            ["--dry-run", "--min-level", "10"],
+            '{ "level": 1 }\n{ "level": 12 }\n{ "level": 13 }\n{ "level": 4 }\n'
+        );
+
+        expect(res.exitCode).toBe(0);
+        expect(JSON.stringify(res.stdout)).toBe(
+            '"\\u001b[90m{\\"level\\":1}\\u001b[39m\\n' +
+                '\\u001b[1m\\u001b[32m{\\"level\\":12}\\u001b[39m\\u001b[22m\\n' +
+                '\\u001b[1m\\u001b[32m{\\"level\\":13}\\u001b[39m\\u001b[22m\\n' +
+                '\\u001b[90m{\\"level\\":4}\\u001b[39m\\n"'
+        );
+        expect(res.stderr).toBe("");
+    });
+});

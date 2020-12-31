@@ -10,6 +10,7 @@ describe("Arguments parsing", () => {
     test("Parses correct default config with empty argv", () => {
         const config = parseConfigFromArgs([]);
         expect(config).toEqual({
+            dryRun: false,
             invalidJson: "error",
         });
     });
@@ -45,7 +46,10 @@ describe("Usage with arguments", () => {
             '{ "skipped": true }'
         );
         expect(res.exitCode).toBe(0);
-        expect(JSON.parse(res.stdout)).toEqual({ invalidJson: "error" });
+        expect(JSON.parse(res.stdout)).toEqual({
+            dryRun: false,
+            invalidJson: "error",
+        });
         expect(res.stderr).toBe("");
     });
 
