@@ -32,6 +32,8 @@ Use this utility as part of a UNIX-style pipe to filter out log entries produced
 
 -   `--invalid-json` (`error` | `skip`) _(Optional, defaults to `error`)_: Specify behavior when consuming invalid JSON lines. With `error`, the process exits with a non-zero exit code. With `skip`, the invalid line is silently filtered out and ignored.
 
+-   `--dry-run` _(Optional)_: Displays filter results with colorized output: lines that pass the specified filter rules are displayed in bold green text. Lines that would be filtered out are displayed in gray text. Using this option requires stdout to be a terminal with color support (set the `FORCE_COLOR` environment variable to `1` to always use colored output; see [details](https://github.com/chalk/supports-color/)).
+
 -   `--debug-print-config` _(Optional)_: Print out resolved configuration and exit.
 
 ## Development
