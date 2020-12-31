@@ -23,14 +23,15 @@ interface RunToCompletionResults {
 
 export const runToCompletion = (
     args: string[],
-    input: string
+    input: string,
+    opts?: Partial<childProcess.SpawnOptionsWithoutStdio>
 ): Promise<RunToCompletionResults> =>
     new Promise((resolve) => {
         const nodePath = process.argv[0];
         const fullArgs =
             args !== undefined ? [indexModulePath, ...args] : [indexModulePath];
 
-        const proc = childProcess.spawn(nodePath, fullArgs);
+        const proc = childProcess.spawn(nodePath, fullArgs, opts);
 
         let stdout = "";
         let stderr = "";
@@ -165,7 +166,8 @@ describe("Dry run", () => {
     test("prints gray and green lines corresponding to filter results", async () => {
         const res = await runToCompletion(
             ["--dry-run", "--min-level", "10"],
-            '{ "level": 1 }\n{ "level": 12 }\n{ "level": 13 }\n{ "level": 4 }\n'
+            '{ "level": 1 }\n{ "level": 12 }\n{ "level": 13 }\n{ "level": 4 }\n',
+            { env: { FORCE_COLOR: "1" } }
         );
 
         expect(res.exitCode).toBe(0);
