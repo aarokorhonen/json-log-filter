@@ -137,7 +137,7 @@ describe("Filter by level", () => {
 });
 
 describe("Invalid JSON handling", () => {
-    test("halts the process on invalid JSON line", async () => {
+    test("supports '--invalid-json error'", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "error"],
             '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
@@ -148,7 +148,7 @@ describe("Invalid JSON handling", () => {
         expect(res.stderr).toMatch("Invalid JSON line");
     });
 
-    test("halts the process on invalid JSON line", async () => {
+    test("supports '--invalid-json skip'", async () => {
         const res = await runToCompletion(
             ["--invalid-json", "skip"],
             '{ "i": 1 }\n{ invalid: invalid }\n{ "i": 2 }'
@@ -159,6 +159,17 @@ describe("Invalid JSON handling", () => {
             stdout: '{"i":1}\n{"i":2}\n',
             stderr: "",
         });
+    });
+
+    test("counts non-object JSON lines as invalid", async () => {
+        const res = await runToCompletion(
+            ["--invalid-json", "error"],
+            '{ "i": 1 }\n123\n{ "i": 2 }'
+        );
+
+        expect(res.exitCode).toBe(1);
+        expect(res.stdout).toBe('{"i":1}\n');
+        expect(res.stderr).toMatch("Invalid JSON line");
     });
 });
 

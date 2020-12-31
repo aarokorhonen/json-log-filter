@@ -8,6 +8,8 @@ This is a tiny utility program for applying filters to structured JSON logs. It 
 -   Node.js applications using the [pino](https://github.com/pinojs/pino) library
 -   Python applications using the [json-logging-python](https://github.com/bobbui/json-logging-python) library
 
+JSON logs consist of stringified JSON object values, each value on a line terminated by a line feed character.
+
 Note that you may need an intermediary transport middleware if your logs are not
 output in the format expected by this utility. Support for flexible filter
 expressions is planned for a future release.

@@ -2,6 +2,14 @@ import readline from "readline";
 import chalk from "chalk";
 import { parseConfigFromArgs } from "./args";
 
+type JsonArray = JsonValue[];
+type JsonValue = string | number | boolean | null | JsonObject | JsonArray;
+interface JsonObject {
+    [x: string]: JsonValue;
+}
+
+type Entry = JsonObject;
+
 const rl = readline.createInterface({
     input: process.stdin,
     terminal: false,
@@ -9,29 +17,31 @@ const rl = readline.createInterface({
 
 const config = parseConfigFromArgs(process.argv.slice(2));
 
-// Note: Using 'any' here mimics the signature of JSON.parse
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const parseLine = (line: string): any => {
+const parseLine = (line: string): Entry | null => {
     try {
         const entry = JSON.parse(line);
-        return entry;
+        if (typeof entry !== "object") {
+            throw new Error(`Non-object JSON value (${typeof entry}): ${line}`);
+        } else {
+            return entry;
+        }
     } catch (err) {
         if (config.invalidJson === "error") {
             console.error(`Invalid JSON line: "${line}" (${err})`);
             process.exit(1);
+        } else {
+            return null;
         }
     }
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onEntryPositive = (entry: any) => {
+const onEntryPositive = (entry: Entry) => {
     const line = JSON.stringify(entry);
     const output = config.dryRun ? chalk.bold.green(line) : line;
     process.stdout.write(`${output}\n`);
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const onEntryNegative = (entry: any) => {
+const onEntryNegative = (entry: Entry) => {
     const line = JSON.stringify(entry);
     if (config.dryRun) {
         const output = chalk.gray(line);
@@ -43,7 +53,7 @@ const onEntryNegative = (entry: any) => {
 
 rl.on("line", (line) => {
     const entry = parseLine(line);
-    if (entry === undefined) return;
+    if (entry === null) return;
     if (
         typeof config.minLogLevel === "number" &&
         typeof entry.level === "number" &&
