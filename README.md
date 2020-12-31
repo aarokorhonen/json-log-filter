@@ -32,7 +32,7 @@ Use this utility as part of a UNIX-style pipe to filter out log entries produced
 
 -   `--min-level` _(Optional)_: Specify minimum level as a command line argument of type integer (see above example). All lines with a `level` entry lower than the specified value will be ignored. Levels without a `level` entry will not be filtered out.
 
--   `--invalid-json` (`error` | `skip`) _(Optional, defaults to `error`)_: Specify behavior when consuming invalid JSON lines. With `error`, the process exits with a non-zero exit code. With `skip`, the invalid line is silently filtered out and ignored.
+-   `--invalid-json` (`error` | `skip` | `pass`) _(Optional, defaults to `error`)_: Specify behavior when consuming invalid JSON lines. With `error`, the process exits with a non-zero exit code. With `skip`, the invalid line is silently filtered out and ignored. With `pass`, the invalid line passes the filter and is output to stdout as-is.
 
 -   `--dry-run` _(Optional)_: Displays filter results with colorized output: lines that pass the specified filter rules are displayed in bold green text. Lines that would be filtered out are displayed in gray text. Using this option requires stdout to be a terminal with color support (set the `FORCE_COLOR` environment variable to `1` to always use colored output; see [details](https://github.com/chalk/supports-color/)).
 
