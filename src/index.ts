@@ -17,6 +17,14 @@ const rl = readline.createInterface({
 
 const config = parseConfigFromArgs(process.argv.slice(2));
 
+if (process.stdin.isTTY) {
+    process.stderr.write(
+        "Warning: This program is not designed to be run with interactive input.\n" +
+            "Run with --help for usage information.\n" +
+            "In the future, you may be able to optionally suppress this warning.\n",
+    );
+}
+
 type ParseLineResult =
     | { status: "success"; value: Entry }
     | { status: "failure"; err: unknown };
